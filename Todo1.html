@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>首页</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+
+    <script src="js/jquery-1.12.4.js"></script>
+
+</head>
+<body>
+    <h1>ToDoS</h1>
+    <div>
+        <input id="todos"/>
+        <div id="todoInfo"></div>
+    </div>
+
+    <script>
+        var params=[{title:"东东",finished: true}];
+
+        $(function() {
+           
+            $("#todos").keypress(function(event){
+                if(event.which===13){
+                    if($("#todos").val().trim()==""){
+                        alert("不能为空哦！");
+
+                    }else{
+                        params.push({title:$("#todos").val(),finished:false});
+                        $("#todos").val("");  
+                        init(params);
+                    }
+
+                }
+            });
+
+            $("#xuan").prop("checked", true){
+                
+            }
+
+        });
+                   
+        function init(params) {
+            var html="";
+            $.each(params,function(index,params) {
+                html+="<p><input type='checkbox' id='xuan'><span>"
+                    +params.title+"</span><button class='del' onclick='del_id('"+index+"')' key='"+index+"'>删除</button></p>"
+            })
+            $("#todoInfo").empty().append(html);
+        }
+        function del_id(id) {
+            params.splice(id,1);
+            init(params);
+        }
+
+    </script>
+</body>
+</html>   
