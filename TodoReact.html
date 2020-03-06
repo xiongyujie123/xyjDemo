@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>首页</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+</head>
+<body>
+    <div id="todo"></div>
+
+</body>
+</html>   
+<script src="js/react.js"></script>
+<script src="js/react-dom.js"></script>
+<script src="js/browser.js"></script>
+<script type="text/babel">
+  var params=[{title:"东东",finished: true}];
+
+    var ToDoAdd=React.createClass({
+        addnewtodo:function(){
+            if(!this.refs.newTitle.value)
+            {
+                return ;
+            }
+            this.props.onAddTodo({
+                title:this.refs.newTitle.value,
+                finished:false
+
+            });
+            this.refs.newTitle.value="";
+        },
+        render:function(){
+                return (
+                    <div>
+                        待办：
+                        <input ref="newTitle"/>
+                        <button onClick={this.addnewtodo} >添加</button>
+                    </div>
+                );
+
+        }
+
+
+    });
+
+
+
+    var ToDoList=React.createClass({
+        tododelete:function(item){
+               this.props.onTododelete(item);
+        },
+         todoStatechange:function(item){
+            item.finished=!item.finished;
+            this.props.ontodoStatechange(item);
+
+          },
+        render:function(){
+            var compo = this;
+                return(
+                    <div>
+                        <table id="todoInfo">
+                            {
+                                this.props.todos.map(function(item,index){
+                                return(
+                                    <tr key={index}>
+                                        <td><input type='checkbox' checked={item.finished} onChange={()=>compo.todoStatechange(item)}/></td>
+                                        <td className={item.finished?'finished':''}>{item.title}</td>                                       
+                                        <td><button onClick={()=>compo.tododelete(item)}>删除</button></td>
+                                     </tr>
+                                    );
+
+                                })
+
+                            }
+                                
+                        </table>
+                    </div>
+                );   
+        }   
+
+    });
+
+    var App = React.createClass({
+        addtodo:function(newitme){
+            var arr=this.state.todos.slice();
+            arr.push(newitme);
+            this.setState({
+                todos:arr
+            });
+        }
+        ,
+        removeTodo:function(item){
+            var arr=this.state.todos.slice();
+            var index=arr.findIndex(function(value,index,arr){
+                    return value.title===item.title;
+            })
+            arr.splice(index,1);
+            this.setState({
+                todos:arr
+            });
+
+        }
+        ,
+        changeTodoStatus:function(updateitme){
+            var arr=this.state.todos.slice();
+            var itme=arr.find(function(value,index,arr){
+                    return updateitme.title===value.title;
+            })
+            itme.finished=updateitme.finished;
+            this.setState({
+                todos:arr
+            });
+        }
+        ,
+        getInitialState:function(){
+            return{
+                todos:params
+            }               
+            
+        }
+        ,
+        render:function(){
+            return (
+                <div>
+                    <h1>ToDoS</h1>
+                    <ToDoAdd onAddTodo={this.addtodo}></ToDoAdd>
+                    <br/>
+                    <ToDoList onTododelete={this.removeTodo} ontodoStatechange={this.changeTodoStatus} todos={this.state.todos}></ToDoList>
+                </div>
+            );
+        }
+        
+
+    });
+	ReactDOM.render(
+		<App></App>,
+		document.getElementById("todo")
+	);
+</script>
