@@ -6,7 +6,14 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>首页</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
-
+    <style>
+        .through{
+            text-decoration:line-through;
+        }
+        
+    
+    
+    </style>
    
 
 </head>
@@ -14,17 +21,23 @@
     <h1>TodoS</h1>
     <div>
         <input id="todos"/>
-        <table id="todoInfo"></table>
+        <table id="todoInfo" border="1"></table>
+    </div>
+    
+    <div>
+            <table id="todoInfotwo"></table>
+           
     </div>
 
 </body>
 </html>   
 <script src="js/jquery-1.12.4.js"></script>
 <script>
-    var params=[{title:"东东",finished: true}];
-
+    var params=[{title:"东东",finished: true},{title:"西西",finished: true},{title:"北北",finished: true}];
     $(function() {
         init(params);
+        inittwo(params);
+        //添加
         $("#todos").keypress(function(event){
             if(event.which===13){
                 if($("#todos").val().trim()==""){
@@ -33,35 +46,98 @@
                 }else{
                     params.push({title:$("#todos").val(),finished:false});
                     $("#todos").val("");  
-                    init(params);
+                    init();
                 }
 
             }
         });
 
     });
-               
+     //加载全部          
     function init(params) {
-        var html="";
-        $.each(params,function(index,params) {
-            html+="<tr><td><input type='checkbox' onclick='checkboxOnclick(this)'></td><td class='through'>"
-                +params.title+"</td><td><button class='del' onclick='del_id("+index+")' key='"+index+"'>删除</button></td><tr>"
-        })
-        $("#todoInfo").empty().append(html);
+        var html="";      
+                $.each(params,function(index,params) {
+                    html+="<tr><td><input type='checkbox'"+(!params.finished?'checked':'')+"  id='"+index+"'  onChange='checkboxOnclick("+index+")'  >" 
+                    +"<input  id='"+index+"' readonly='readonly'  value='"+params.title+"' key='"+index+"'/></td><td><button class='del' onclick='del_id("+index+")' key='"+index+"'>删除</button></td><tr>"
+                });
+
+          
+         
+            $("#todoInfo").empty().append(html);
+        
     }
-    function del_id(id) {
-        params.splice(id,1);
+    //加载按钮
+    function inittwo(params) {
+        var html="";
+               
+                html+=" <button id='all' onclick='aaaall()'>全部</button>"
+                +"<button id='been_completed' onclick='Completed()'>已完成</button>"
+                +"<button id='unfinished' onclick='Unfinished()'>未完成</button>" ;                   
+        
+        $("#todoInfotwo").empty().append(html);
+    }
+
+    function aaaall(){
         init(params);
     }
+
+    //加载以完成
+    function Completed(){
+        var html ="";
+        $.each(params,function(index,params) {
+            if(!params.finished){
+                html+="<tr><td><input type='checkbox' "+(!params.finished?'checked':'')+" id='"+index+"'  onChange='checkboxOnclick("+index+")' checked>"
+                +"<input class='through' readonly='readonly' value='"+params.title+"'/></td><td><button class='del' onclick='del_id("+index+")' key='"+index+"'>删除</button></td><tr>";
+            }
+        })
+        $("#todoInfo").empty().append(html);
+        inittwo(params) ;
+
+    }
+    //加载未完成
+    function Unfinished(){
+        var html ="";
+        $.each(params,function(index,params) {
+            if(params.finished){
+                html+="<tr><td><input type='checkbox' "+(!params.finished?'checked':'')+"  id='"+index+"'  onChange='checkboxOnclick("+index+")' value='false'>"
+                +"<input readonly='readonly' value='"+params.title+"' ondblclick='stater(this)' class='to' onblur='update(this)' key='"+index+"'/></td>"
+                +"<td><button class='del' onclick='del_id("+index+")' key='"+index+"'>删除</button></td><tr>";
+            }
+        })
+        $("#todoInfo").empty().append(html);
+        inittwo(params) ;
+    }
+    //移除readonly属性
+    function stater(to){
+        to.removeAttribute("readonly");
+             
+     }
+     function update(to){
+        to.setAttribute("readonly","readonly"); 
+        var index = to.getAttribute("key");
+        params[index].title = to.value;
+     }
+    //删除
+    function del_id(id) {
+        params.splice(id,1);
+        init();
+    }
+    //显示下计划线
+    function checkboxOnclick(index){
+        console.info("cc");
+        if(params[index].finished){
+           
+            $("#"+index).next().addClass("through") ;
+            params[index].finished=false;
     
-    function checkboxOnclick(checkbox){
-    
-        if ( checkbox.checked == true){
-            $(".through").css({"text-decoration":"line-through"});
-                   
+         
         }else{
-            $(".through").css({"text-decoration":"none"});
+            console.info("bb");
+            $("#"+index).next().removeClass("through") ;
+            params[index].finished=true;;
         }
+        init(params) ;
+
     }
 
 </script>
