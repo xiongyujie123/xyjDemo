@@ -50,7 +50,7 @@ export default class ToDoAdd extends Component<Props, TitleToStrign>{
             <div>
                 <h1>ToDoS</h1>
                 待办：
-                <input onKeyUp={this.handleKey} value={this.state.title} onChange={this.handleChange.bind(this)} placeholder="What are you trying to say" />
+                <input onKeyUp={this.handleKey} value={this.state.title} onChange={this.handleChange.bind(this)} placeholder="What needs to be done" />
             </div>
         );
     }

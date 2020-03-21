@@ -4,9 +4,11 @@ import { Link } from 'umi';
 import styles from './index.less';
 
 export interface Props {
-    todolist: ListItem[]
+    todolist: ListItem[];
     onDeleteTodo: (item: ListItem) => void;
     onChangeTodoStatus: (updateitme: ListItem) => void;
+    Up:(item: ListItem)=>void;
+    Under:(item: ListItem)=>void;
 }
 
 export default class ToDoList extends Component<Props> {
@@ -19,6 +21,13 @@ export default class ToDoList extends Component<Props> {
         item.finished = !item.finished;
         this.props.onChangeTodoStatus(item);
     }
+    onUp=(item:ListItem)=>{
+         this.props.Up(item);
+    }
+    onUnder=(item:ListItem)=>{
+         this.props.Under(item);
+    }
+
     render() {
         var t = this;
         return (
@@ -35,8 +44,8 @@ export default class ToDoList extends Component<Props> {
                                     <td style={item.finished ? {textDecoration: 'line-through' } : {textDecoration: 'none' }} className={item.finished ? 'finished' : ''}>{item.title}</td>
                                     <td><button onClick={() => t.todoDelte(item)}>删除</button></td>
                                     <td><button><Link to={'/info' + item.id}>详情</Link></button></td>
-                                    <td><button>上</button></td>
-                                    <td><button>下</button></td>
+                                    <td><button onClick={()=>t.onUp(item)}>上</button></td>
+                                    <td><button onClick={()=>t.onUnder(item)}>下</button></td>
                                 </tr>
                             )
                             ) : null}

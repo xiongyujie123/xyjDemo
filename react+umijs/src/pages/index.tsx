@@ -22,7 +22,7 @@ export default class Index extends React.Component<any, State> {
   constructor(props: any) {
     super(props);
     this.todaData();
-    this.state = {    
+    this.state = {
       todolist: [],
       ThingsValue: 1
     }
@@ -30,7 +30,7 @@ export default class Index extends React.Component<any, State> {
 
   todaData = () => {
     axios.get('/api/todoList').then(res => {
-      this.setState({  
+      this.setState({
         todolist: res.data
       })
     })
@@ -57,34 +57,80 @@ export default class Index extends React.Component<any, State> {
     var item = arr.find(function (value, index, arr) {
       return updateitme.title === value.title;
     })
-    if(item){
-    item.finished= updateitme.finished;
-    this.setState({
-      todolist: arr,
-      ThingsValue:3
-    });
+    if (item) {
+      item.finished = updateitme.finished;
+      this.setState({
+        todolist: arr,
+        ThingsValue: 3
+      });
+    }
   }
-  }
-  changeThings=(option:number)=> {
+  changeThings = (option: number) => {
     this.setState({
-        ThingsValue:option
+      ThingsValue: option
     })
-  
-}
+
+  }
+  operationUp = (item: ListItem) => {
+    var arr = this.state.todolist.slice();
+    var index = arr.findIndex(function (value) {
+      return value.id === item.id;
+    });
+    if (index != 0) {
+
+      var title = "";
+      var fin = false;
+      title = arr[index - 1].title;
+      fin = arr[index - 1].finished;
+
+      arr[index - 1].title = item.title;
+      arr[index - 1].finished = item.finished;
+      item.title = title;
+      item.finished = fin;
+      this.setState({
+        todolist: arr
+      });
+
+    }
+  }
+  operationUnder = (item: ListItem) => {
+    var arr = this.state.todolist.slice();
+    var index = arr.findIndex(function (value) {
+      return value.id === item.id;
+    });
+    if (index < this.state.todolist.length - 1) {
+
+      var title = "";
+      var fin = false;
+      title = arr[index + 1].title;
+      fin = arr[index + 1].finished;
+
+      arr[index + 1].title = item.title;
+      arr[index + 1].finished = item.finished;
+      item.title = title;
+      item.finished = fin;
+      this.setState({
+        todolist: arr
+      });
+
+    }
+  }
 
   render() {
     return (
       <div>
         <ToDoAdd onAddTodo={this.addtodo} todolist={this.state.todolist}></ToDoAdd>
         <ToDoList todolist={this.state.todolist.filter(it =>
-            this.state.ThingsValue === 1
-              ? true
-              : this.state.ThingsValue === 3
+          this.state.ThingsValue === 1
+            ? true
+            : this.state.ThingsValue === 3
               ? !it.finished
               : it.finished,
-          )} 
-        onDeleteTodo={this.removeTodo} 
-        onChangeTodoStatus={this.changeTodoStatus}></ToDoList>
+        )}
+          onDeleteTodo={this.removeTodo}
+          onChangeTodoStatus={this.changeTodoStatus}
+          Up={this.operationUp}
+          Under={this.operationUnder}></ToDoList>
         <ToDoBottom changeThings={this.changeThings}></ToDoBottom>
       </div>
 
