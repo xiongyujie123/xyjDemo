@@ -21,7 +21,7 @@
   "dependencies": {
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.0.10",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "lint-staged": "^10.0.7",
     "mockjs": "^1.1.0",
     "prettier": "^1.19.1",
